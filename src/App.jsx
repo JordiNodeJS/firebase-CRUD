@@ -9,19 +9,44 @@ function App() {
   useEffect(() => {
     const getUser = async _ => {
       const data = await getDocs(userCollectionRef)
-      console.log(data)
+
+      setUsers(data.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+      console.log(data.docs[0].data())
     }
     getUser()
   }, [])
 
   return (
     <>
-      <button className='btn btn-active'>Button</button>
-      <button className='btn btn-active btn-primary'>Button</button>
-      <button className='btn btn-active btn-secondary'>Button</button>
-      <button className='btn btn-active btn-accent'>Button</button>
+      <div className='overflow-x-auto'>
+        <table className='table w-full'>
+
+
+          {/* head */}
+          <thead>
+            <tr>
+          
+              <th>Name</th>
+              <th>Age</th>
+              <th>Favorite Color</th>
+            </tr>
+          </thead>
+          <tbody>
+          {users.map(user => 
+                        <tr key={user.id}>
+                        <td>{user.name}</td>
+                        <td>{user.age}</td>
+                        <td>{user.favoriteColor}</td>
+                      </tr>
+            
+            )}     
+   
+          </tbody>
+        </table>
+      </div>
+
       <button className='btn btn-active btn-ghost'>Button</button>
-      <button className='btn btn-active btn-link'>Button</button>
+
       <hr />
     </>
   )
