@@ -5,13 +5,13 @@
 
 @layer base {
   body {
-    @apply m-4;
+    @apply m-0;
   }
 }
 
 @layer components {
   .mycontainer {
-    @apply max-w-md w-auto my-6;
+    @apply flex flex-col max-w-lg w-auto my-6 mx-2;
   }
   hr {
     @apply block border-[#771fce] my-4;
