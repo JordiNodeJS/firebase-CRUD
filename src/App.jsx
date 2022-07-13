@@ -10,9 +10,8 @@ function App() {
   const userCollectionRef = collection(db, 'users')
 
   const createUser = async _ => {
-    setList(false)
     await addDoc(userCollectionRef, { name: name, age: +age })
-    setList(true)
+    setList(!list)
   }
   const updateUser = async (id, age) => {
     const userDoc = doc(db, 'users', id)
@@ -22,10 +21,9 @@ function App() {
   }
 
   const deteteUser = async id => {
-    setList(false)
     const userDoc = doc(db, 'users', id)
     await deleteDoc(userDoc)
-    setList(true)
+    setList(!list)
   }
 
   useEffect(() => {
