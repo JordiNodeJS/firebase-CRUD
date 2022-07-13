@@ -1,21 +1,31 @@
 import { useEffect, useState } from 'react'
 import { db } from '../firebase.config'
-import { collection, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
 
 function App() {
   const [name, setName] = useState('')
-  const [age, setAge] = useState(localStorage.getItem('age') !== null ? +localStorage.getItem('age') : 0) //localStorage.getItem('age') !== null ? +localStorage.getItem('age') : 0
+  const [age, setAge] = useState(0)
   const [users, setUsers] = useState([])
+  const [list, setList] = useState(false)
   const userCollectionRef = collection(db, 'users')
 
   const createUser = async _ => {
+    setList(false)
     await addDoc(userCollectionRef, { name: name, age: +age })
+    setList(true)
   }
-  const increment = async id => {
-    setAge(prev => prev + 1)
+  const updateUser = async (id, age) => {
     const userDoc = doc(db, 'users', id)
-    localStorage.setItem('age', age)
-    await updateDoc(userDoc, { age: age })
+    localStorage.setItem(id, age + 1)
+    await updateDoc(userDoc, { age: age + 1 })
+    setAge(prev => prev + 1)
+  }
+
+  const deteteUser = async id => {
+    setList(false)
+    const userDoc = doc(db, 'users', id)
+    await deleteDoc(userDoc)
+    setList(true)
   }
 
   useEffect(() => {
@@ -26,7 +36,7 @@ function App() {
       console.log(data.docs[0].id)
     }
     getUser()
-  }, [age])
+  }, [age, list])
 
   return (
     <div className='mycontainer'>
@@ -80,9 +90,16 @@ function App() {
                 <td>{user.age}</td>
                 <td>{user.favoriteColor}</td>
                 <td>
-                  <button onClick={_ => increment(user.id)} className='btn btn-primary'>
-                    Increment Age
-                  </button>
+                  <div className='btn-group'>
+                    <button
+                      onClick={_ => updateUser(user.id, user.age)}
+                      className='btn btn-primary'>
+                      Increment Age
+                    </button>
+                    <button onClick={_ => deteteUser(user.id)} className='btn btn-warning'>
+                      D E L E T E U S E R
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
